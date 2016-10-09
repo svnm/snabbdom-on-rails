@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/StevenIseki/react-modal-view.git"
+    "url": "https://github.com/StevenIseki/snabbdom-on-rails.git"
   },
   "keywords": [
     "snabbdom",
@@ -17,7 +17,7 @@
   ],
   "author": "Steven Iseki",
   "license": "MIT",
-  "homepage": "https://github.com/StevenIseki/react-modal-view.git",
+  "homepage": "https://github.com/StevenIseki/snabbdom-on-rails.git",
   "peerDependencies": {
     "snabbdom": "^0.5.3",
     "snabbdom-jsx": "^0.3.1"

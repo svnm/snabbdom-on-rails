@@ -1,15 +1,13 @@
-## react-modal-view
+## snabbdom-on-rails
 
-[![npm version](https://badge.fury.io/js/react-modal-view.svg)](https://badge.fury.io/js/react-modal-view)
+[![npm version](https://badge.fury.io/js/snabbdom-on-rails.svg)](https://badge.fury.io/js/snabbdom-on-rails)
 
-![](https://raw.githubusercontent.com/StevenIseki/react-modal-view/master/example/screenshot.png)
-
-a simple react modal component
+`snabbdom-on-rails` JavaScript for `react_on_rails` Ruby gem
 
 ## Install
 
 ``` js
-npm install react-modal-view --save
+npm install snabbdom-on-rails --save
 ```
 
 ## Versions
@@ -71,10 +69,9 @@ const HelloMessage = ({name}) =>
     {name}
   </div>;
 
-//var vnode = <HelloMessage name="Yassine" />
-const Container = (props) => ( <HelloMessage {...props} /> )
+const Component = (props) => ( <HelloMessage {...props} /> )
 
-ReactOnRails.register({ Container })
+SnabbdomOnRails.register({ Component })
 ```
 
 ## Development
