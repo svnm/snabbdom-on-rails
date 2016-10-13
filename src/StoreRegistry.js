@@ -16,7 +16,7 @@ export default {
 
       const store = storeGenerators[name];
       if (!store) {
-        throw new Error('Called SnabbdomOnRails.registerStores with a null or undefined as a value ' +
+        throw new Error('Called ReactOnRails.registerStores with a null or undefined as a value ' +
           `for the store generator with key ${name}.`);
       }
 

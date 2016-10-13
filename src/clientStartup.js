@@ -1,5 +1,5 @@
 /** @jsx html */
-import SnabbdomOnRails from './index';
+import ReactOnRails from './SnabbdomOnRails';
 var snabbdom = require('snabbdom');
 import { html } from 'snabbdom-jsx';
 var patch = snabbdom.init([
@@ -9,9 +9,8 @@ var patch = snabbdom.init([
   require('snabbdom/modules/eventlisteners'),
 ]);
 
-
-const SNABBDOM_ON_RAILS_COMPONENT_CLASS_NAME = 'js-snabbdom-on-rails-component';
-const SNABBDOM_ON_RAILS_STORE_CLASS_NAME = 'js-snabbdom-on-rails-store';
+const REACT_ON_RAILS_COMPONENT_CLASS_NAME = 'js-react-on-rails-component';
+const REACT_ON_RAILS_STORE_CLASS_NAME = 'js-react-on-rails-store';
 
 function debugTurbolinks(...msg) {
   if (!window) {
@@ -31,19 +30,19 @@ function forEach(fn, className, railsContext) {
 }
 
 function forEachComponent(fn, railsContext) {
-  forEach(fn, SNABBDOM_ON_RAILS_COMPONENT_CLASS_NAME, railsContext);
+  forEach(fn, REACT_ON_RAILS_COMPONENT_CLASS_NAME, railsContext);
 }
 
 function initializeStore(el, railsContext) {
   const name = el.getAttribute('data-store-name');
   const props = JSON.parse(el.getAttribute('data-props'));
-  const storeGenerator = SnabbdomOnRails.getStoreGenerator(name);
+  const storeGenerator = ReactOnRails.getStoreGenerator(name);
   const store = storeGenerator(props, railsContext);
-  SnabbdomOnRails.setStore(name, store);
+  ReactOnRails.setStore(name, store);
 }
 
 function forEachStore(railsContext) {
-  forEach(initializeStore, SNABBDOM_ON_RAILS_STORE_CLASS_NAME, railsContext);
+  forEach(initializeStore, REACT_ON_RAILS_STORE_CLASS_NAME, railsContext);
 }
 
 function turbolinksVersion5() {
@@ -51,7 +50,7 @@ function turbolinksVersion5() {
 }
 
 /**
- * Used for client rendering by SnabbdomOnRails
+ * Used for client rendering by ReactOnRails
  * @param el
  */
 function render(el, railsContext) {
@@ -61,38 +60,24 @@ function render(el, railsContext) {
   const trace = JSON.parse(el.getAttribute('data-trace'));
 
   try {
+
+    /* patch Snabbdom component to domNode */
     const domNode = document.getElementById(domNodeId);
     if (domNode) {
 
-      const componentObj = SnabbdomOnRails.getComponent(name);
+      const componentObj = ReactOnRails.getComponent(name);
       patch(domNode, <componentObj.component {...props} /> );
-
-/*
-      function main(initState, oldVnode, {view, update}) {
-        const newVnode = view(initState, e => {
-          const newState = update(initState, e);
-          main(newState, newVnode, {view, update});
-        });
-        patch(oldVnode, newVnode);
-      }
-
-      main(
-        0, // the initial state
-        domNode,
-        elem.component()
-      );
-*/
-
     }
   } catch (e) {
-    e.message = `SnabbdomOnRails encountered an error while rendering component: ${name}.` +
+
+    e.message = `ReactOnRails encountered an error while rendering component: ${name}.` +
       `Original message: ${e.message}`;
     throw e;
   }
 }
 
 function parseRailsContext() {
-  const el = document.getElementById('js-snabbdom-on-rails-context');
+  const el = document.getElementById('js-react-on-rails-context');
   if (el) {
     return JSON.parse(el.getAttribute('data-rails-context'));
   }
@@ -100,8 +85,8 @@ function parseRailsContext() {
   return null;
 }
 
-export function snabbdomOnRailsPageLoaded() {
-  debugTurbolinks('snabbdomOnRailsPageLoaded');
+export function reactOnRailsPageLoaded() {
+  debugTurbolinks('reactOnRailsPageLoaded');
 
   const railsContext = parseRailsContext();
   forEachStore(railsContext);
@@ -111,11 +96,11 @@ export function snabbdomOnRailsPageLoaded() {
 function unmount(el) {
   const domNodeId = el.getAttribute('data-dom-id');
   const domNode = document.getElementById(domNodeId);
-  /* ReactDOM.unmountComponentAtNode(domNode); */
+  ReactDOM.unmountComponentAtNode(domNode);
 }
 
-function snabbdomOnRailsPageUnloaded() {
-  debugTurbolinks('snabbdomOnRailsPageUnloaded');
+function reactOnRailsPageUnloaded() {
+  debugTurbolinks('reactOnRailsPageUnloaded');
   forEachComponent(unmount);
 }
 
@@ -129,10 +114,12 @@ export function clientStartup(context) {
 
   // Tried with a file local variable, but the install handler gets called twice.
   // eslint-disable-next-line no-underscore-dangle
-  if (context.__SNABBDOM_ON_RAILS_EVENT_HANDLERS_RAN_ONCE__) {
+  if (context.__REACT_ON_RAILS_EVENT_HANDLERS_RAN_ONCE__) {
     return;
   }
-  context.__SNABBDOM_ON_RAILS_EVENT_HANDLERS_RAN_ONCE__ = true;
+
+  // eslint-disable-next-line no-underscore-dangle
+  context.__REACT_ON_RAILS_EVENT_HANDLERS_RAN_ONCE__ = true;
 
   debugTurbolinks('Adding DOMContentLoaded event to install event listeners.');
 
@@ -143,22 +130,22 @@ export function clientStartup(context) {
 
     if (!turbolinksInstalled()) {
       debugTurbolinks(
-        'NOT USING TURBOLINKS: DOMContentLoaded event, calling snabbdomOnRailsPageLoaded'
+        'NOT USING TURBOLINKS: DOMContentLoaded event, calling reactOnRailsPageLoaded'
       );
-      snabbdomOnRailsPageLoaded();
+      reactOnRailsPageLoaded();
     } else if (turbolinksVersion5()) {
       debugTurbolinks(
         'USING TURBOLINKS 5: document added event listeners turbolinks:before-render and ' +
         'turbolinks:load.'
       );
-      document.addEventListener('turbolinks:before-render', snabbdomOnRailsPageUnloaded);
-      document.addEventListener('turbolinks:load', snabbdomOnRailsPageLoaded);
+      document.addEventListener('turbolinks:before-render', reactOnRailsPageUnloaded);
+      document.addEventListener('turbolinks:load', reactOnRailsPageLoaded);
     } else {
       debugTurbolinks(
         'USING TURBOLINKS 2: document added event listeners page:before-unload and ' +
         'page:change.');
-      document.addEventListener('page:before-unload', snabbdomOnRailsPageUnloaded);
-      document.addEventListener('page:change', snabbdomOnRailsPageLoaded);
+      document.addEventListener('page:before-unload', reactOnRailsPageUnloaded);
+      document.addEventListener('page:change', reactOnRailsPageLoaded);
     }
   });
 }

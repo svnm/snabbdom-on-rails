@@ -1,8 +1,8 @@
 {
   "name": "snabbdom-on-rails",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "snabbdom-on-rails JavaScript for react_on_rails Ruby gem",
-  "main": "lib/index.js",
+  "main": "lib/SnabbdomOnRails.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/StevenIseki/snabbdom-on-rails.git"
@@ -20,7 +20,8 @@
   "homepage": "https://github.com/StevenIseki/snabbdom-on-rails.git",
   "peerDependencies": {
     "snabbdom": "^0.5.3",
-    "snabbdom-jsx": "^0.3.1"
+    "snabbdom-jsx": "^0.3.1",
+    "snabbdom-to-html": "^2.1.3"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",
@@ -38,7 +39,6 @@
     "webpack": "^1.13.1"
   },
   "scripts": {
-    "build": "babel src --out-dir lib",
-    "test": "tape test/index.js"
+    "build": "babel src --out-dir lib"
   }
 }

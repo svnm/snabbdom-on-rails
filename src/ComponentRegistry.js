@@ -42,7 +42,7 @@ Registered component names include [ ${keys} ]. Maybe you forgot to register the
   /**
    * Get a Map containing all registered components. Useful for debugging.
    * @returns Map where key is the component name and values are the
-   * { name, component}
+   * { name, component }
    */
   components() {
     return registeredComponents;

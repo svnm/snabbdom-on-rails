@@ -1,10 +1,19 @@
+/** @jsx html */
+var snabbdom = require('snabbdom');
+import { html } from 'snabbdom-jsx';
+var patch = snabbdom.init([
+  require('snabbdom/modules/class'),
+  require('snabbdom/modules/props'),
+  require('snabbdom/modules/style'),
+  require('snabbdom/modules/eventlisteners'),
+]);
+
 import * as ClientStartup from './clientStartup';
 import handleError from './handleError';
 import ComponentRegistry from './ComponentRegistry';
 import StoreRegistry from './StoreRegistry';
-import serverRenderReactComponent from './serverRenderReactComponent';
+import serverRenderComponent from './serverRenderComponent';
 import buildConsoleReplay from './buildConsoleReplay';
-import createReactElement from './createReactElement';
 import Authenticity from './Authenticity';
 import context from './context';
 
@@ -16,7 +25,7 @@ const DEFAULT_OPTIONS = {
 
 ctx.ReactOnRails = {
   /**
-   * Main entry point to using the snabbdom-on-rails npm package. This is how snabbdom will be able to
+   * Main entry point to using the react-on-rails npm package. This is how Rails will be able to
    * find you components for rendering.
    * @param components (key is component name, value is component)
    */
@@ -25,14 +34,14 @@ ctx.ReactOnRails = {
   },
 
   /**
-   * Allows registration of store generators to be used by multiple components on one Rails
+   * Allows registration of store generators to be used by multiple react components on one Rails
    * view. store generators are functions that take one arg, props, and return a store. Note that
    * the setStore API is different in tha it's the actual store hydrated with props.
    * @param stores (keys are store names, values are the store generators)
    */
   registerStore(stores) {
     if (!stores) {
-      throw new Error('Called SnabbdomOnRails.registerStores with a null or undefined, rather than ' +
+      throw new Error('Called ReactOnRails.registerStores with a null or undefined, rather than ' +
         'an Object with keys being the store names and the values are the store generators.');
     }
 
@@ -53,7 +62,7 @@ ctx.ReactOnRails = {
   },
 
   /**
-   * Set options for SnabbdomOnRails, typically before you call SnabbdomOnRails.register
+   * Set options for ReactOnRails, typically before you call ReactOnRails.register
    * Available Options:
    * `traceTurbolinks: true|false Gives you debugging messages on Turbolinks events
    */
@@ -65,7 +74,7 @@ ctx.ReactOnRails = {
 
     if (Object.keys(newOptions).length > 0) {
       throw new Error(
-        'Invalid options passed to SnabbdomOnRails.options: ', JSON.stringify(newOptions)
+        'Invalid options passed to ReactOnRails.options: ', JSON.stringify(newOptions)
       );
     }
   },
@@ -113,7 +122,7 @@ ctx.ReactOnRails = {
   },
 
   /**
-   * Allows retrieval of the store generator by name. This is used internally by SnabbdomOnRails after
+   * Allows retrieval of the store generator by name. This is used internally by ReactOnRails after
    * a rails form loads to prepare stores.
    * @param name
    * @returns Redux Store generator function
@@ -123,7 +132,7 @@ ctx.ReactOnRails = {
   },
 
   /**
-   * Allows saving the store populated by Rails form props. Used internally by SnabbdomOnRails.
+   * Allows saving the store populated by Rails form props. Used internally by ReactOnRails.
    * @param name
    * @returns Redux Store, possibly hydrated
    */
@@ -132,9 +141,23 @@ ctx.ReactOnRails = {
   },
 
   /**
+   * ReactOnRails.render("HelloWorldApp", {name: "Stranger"}, 'app');
+   *
+   * @param name Name of your registered component
+   * @param props Props to pass to your component
+   * @param domNodeId
+   * @returns {virtualDomElement} Reference to your component's backing instance
+   */
+  render(name, props, domNodeId) {
+    const componentObj = getComponent(name);
+    let domNode = document.getElementById(domNodeId)
+    return patch(domNode, <componentObj.component {...props} /> );
+  },
+
+  /**
    * Get the component that you registered
    * @param name
-   * @returns {name, component, generatorFunction}
+   * @returns {name}
    */
   getComponent(name) {
     return ComponentRegistry.get(name);
@@ -145,7 +168,7 @@ ctx.ReactOnRails = {
    * @param options
    */
   serverRenderReactComponent(options) {
-    return serverRenderReactComponent(options);
+    return serverRenderComponent(options);
   },
 
   /**
@@ -192,7 +215,7 @@ ctx.ReactOnRails = {
   },
 };
 
-ctx.SnabbdomOnRails.resetOptions();
+ctx.ReactOnRails.resetOptions();
 
 ClientStartup.clientStartup(ctx);
 

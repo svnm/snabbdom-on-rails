@@ -1,17 +1,19 @@
-import ReactDOMServer from 'react-dom/server';
-import createReactElement from './createReactElement';
+/** @jsx html */
+import ReactOnRails from './SnabbdomOnRails';
+const toHTML = require('snabbdom-to-html')
+import { html } from 'snabbdom-jsx';
 import buildConsoleReplay from './buildConsoleReplay';
 import handleError from './handleError';
 
-export default function serverRenderReactComponent(options) {
+export default function serverRenderComponent(options) {
   const { name, domNodeId, trace } = options;
 
   let htmlResult = '';
   let hasErrors = false;
 
   try {
-    const reactElementOrRouterResult = createReactElement(options);
-    htmlResult = ReactDOMServer.renderToString(reactElementOrRouterResult);
+    const componentObj = SnabbdomOnRails.getComponent(name);
+    const htmlResult = toHTML(<componentObj.component />);
 
   } catch (e) {
     hasErrors = true;
