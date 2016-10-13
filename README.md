@@ -6,13 +6,9 @@
 
 ## Install
 
-``` js
+```jsx
 npm install snabbdom-on-rails --save
 ```
-
-## Versions
-
-#### `1.0.0` uses React `^0.15.1`
 
 ## Getting Started
 
@@ -57,15 +53,13 @@ the `react-on-rails` and `react` node modules for `snabbdom`, `snabbdom-jsx` and
 
 7. Visit [localhost:3000/hello_world](http://localhost:3000/hello_world)
 
-## Use
+## Usage
 
-It will be nice if instead of `ReactOnRails.register` you can use `SnabbdomOnRails.register`, this is a work in progress, at the moment this module just leaves all of the hooks from the react_on_rails gem to call the react methods, but instead of rendering react components, it renders snabbdom components. At the moment this is a bit of a work in progress, very happy to get some help from anyone who has some time and some more rails or snabbdom experience.
+An example below of rendering a simple component/function with `snabbdom-on-rails`. There is also an example project I am working on [here](https://github.com/StevenIseki/snabbdom_on_rails-example)
 
-Here is an example of rendering a simple component/function with `snabbdom-on-rails` and also there is an example project I am working on [here](https://github.com/StevenIseki/snabbdom_on_rails-example)
-
-``` js
+```jsx
 /** @jsx html */
-import { html } from 'snabbdom-jsx';
+import { html } from 'snabbdom-jsx'
 import ReactOnRails from 'snabbdom-on-rails'
 
 const HelloMessage = ({name}) =>
@@ -78,11 +72,13 @@ const MyComponent = (props) => ( <HelloMessage {...props} /> )
 ReactOnRails.register({ MyComponent })
 ```
 
-This component can then be used in a rails view, like this, e.g. using haml:
+This registered component can then be used in a rails view, like this, e.g. using haml:
 
 ```haml
 = react_component('MyComponent', props: { name: 'Iseki' })
 ```
+
+It will be nice if instead of `ReactOnRails.register` could use `SnabbdomOnRails.register`, this is a work in progress, at the moment this module just leaves alone all of the calls to register and render from the react_on_rails gem, but instead of rendering react components, renders snabbdom components. Happy to get some help from anyone who has some time and some more react_on_rails or snabbdom experience to help improve the current implementation.
 
 ## Development
 
