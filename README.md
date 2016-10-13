@@ -1,4 +1,4 @@
-## snabbdom-on-rails
+# [snabbdom-on-rails](https://github.com/StevenIseki/snabbdom-on-rails)
 
 [![npm version](https://badge.fury.io/js/snabbdom-on-rails.svg)](https://badge.fury.io/js/snabbdom-on-rails)
 
