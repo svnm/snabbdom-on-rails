@@ -1,6 +1,6 @@
 {
   "name": "snabbdom-on-rails",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "snabbdom-on-rails JavaScript for react_on_rails Ruby gem",
   "main": "lib/SnabbdomOnRails.js",
   "repository": {
